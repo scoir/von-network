@@ -192,6 +192,8 @@ class NetworkSetup:
         parser = argparse.ArgumentParser(description="Generate pool transactions for initialization")
         parser.add_argument('--clients', required=True, type=int,
                             help='client count')
+        parser.add_argument('--node_num', required=True, type=int,
+                            help='node number')
         parser.add_argument('--topology',
                             help='Location of the topology JSON file',
                             type=str,
@@ -208,20 +210,13 @@ class NetworkSetup:
         with open(args.topology, 'r') as f:
             topology = json.load(f)
 
-        if isinstance(topology['node_num'], int):
-            if not (1 <= topology['node_num'] <= topology['node_num']):
-                raise Exception(
-                    'topology["node_num"]', topology['node_num'],
-                    ">= 1 && <= args.nodes {}".format(topology["nodes"])
-                )
-
-        node_num = [topology['node_num'], None] if topology['node_num'] else [None]
+        node_num = [args.node_num]
 
         steward_defs, node_defs = cls.gen_defs(topology['genesis_seeds'], topology['steward_seeds'], topology['ips'],
                                                topology['nodes'], starting_port)
         trustee_def = cls.gen_trustee_def(topology['trustee_seed'], 1)
 
-        if topology['node_num']:
+        if args.node_num > 0:
             # update network during node generation only
             # edit NETWORK_NAME in config
             for line in fileinput.input(['/etc/indy/indy_config.py'], inplace=True):

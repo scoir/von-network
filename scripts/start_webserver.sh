@@ -4,7 +4,7 @@ set -e
 
 if [ ! -f "/home/indy/ledger/sandbox/pool_transactions_genesis" ] && [ -z "${GENESIS_URL}" ] && [ -z "${GENESIS_FILE}" ]; then
   echo "Ledger does not exist - Creating genesis data..."
-    new_node_setup --topology /etc/nymble/topology.json --clients 0 > /tmp/new_node_setup.log
+    new_node_setup --topology /etc/nymble/topology.json --node_num 1 --clients 0 > /tmp/new_node_setup.log
 fi
 
 # link node ledgers where webserver can find them
